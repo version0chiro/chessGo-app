@@ -158,27 +158,39 @@
 		<h1>Game Started</h1>
 		<h1>Colour: {colour}</h1>
 		<h1>Username: {playerId}</h1>
-		<div class="chessboard">
-			{#each board as row, rowIndex}
-				{#each row as piece, colIndex}
-					<!-- svelte-ignore a11y-click-events-have-key-events -->
-					<!-- svelte-ignore a11y-no-static-element-interactions -->
-					<div
-						class="square {getSquareColor(rowIndex * cols + colIndex)}"
-						on:click={() => handleSquareClick(rowIndex * cols + colIndex)}
-					>
-						{pieces[piece]}
-					</div>
+		{#if colour === 'white'}
+			<div class="chessboard">
+				{#each board as row, rowIndex}
+					{#each row as piece, colIndex}
+						<!-- svelte-ignore a11y-click-events-have-key-events -->
+						<!-- svelte-ignore a11y-no-static-element-interactions -->
+						<div
+							class="square {getSquareColor(rowIndex * cols + colIndex)}"
+							on:click={() => handleSquareClick(rowIndex * cols + colIndex)}
+						>
+							{pieces[piece]}
+						</div>
+					{/each}
 				{/each}
-			{/each}
-		</div>
-		<!-- Display incoming messages -->
-		{#each messages as message}
-			<p>{message}</p>
-		{/each}
+			</div>
+		{:else}
+			<div class="chessboard chessboard-black">
+				{#each board as row, rowIndex}
+					{#each row as piece, colIndex}
+						<!-- svelte-ignore a11y-click-events-have-key-events -->
+						<!-- svelte-ignore a11y-no-static-element-interactions -->
+						<div
+							class="square {getSquareColor(rowIndex * cols + colIndex)}"
+							on:click={() => handleSquareClick(rowIndex * cols + colIndex)}
+						>
+							{pieces[piece]}
+						</div>
+					{/each}
+				{/each}
+			</div>
+		{/if}
 
 		<!-- Chess Board -->
-		<div class="chess-board"></div>
 
 		<input type="text" bind:value={newMessage} placeholder="New Message" />
 		<button class="rounded bg-yellow-100 p-5 border border-black" on:click={sendMessage}>
@@ -206,6 +218,12 @@
 		grid-template-rows: repeat(8, 50px);
 		gap: 1px;
 	}
+	.chessboard-black {
+		display: grid;
+		grid-template-columns: repeat(8, 50px);
+		grid-template-rows: repeat(8, 50px);
+		rotate: 180deg;
+	}
 
 	.square {
 		display: flex;
@@ -214,6 +232,9 @@
 		width: 50px;
 		height: 50px;
 		font-size: 20px;
+	}
+	.chessboard-black .square {
+		rotate: 180deg;
 	}
 
 	.light {
