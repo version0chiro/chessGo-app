@@ -49,10 +49,14 @@
 			}
 			if (message.type === 'move') {
 				console.log('Move:', message.content);
-				board = message.board
+				board = message.board;
 			}
-			console.log('Message from server:', event.data);
-			messages = [...messages, event.data];
+			if (message.type === 'invalidMove') {
+				console.log('Invalid move:', message.content);
+			} else {
+				console.log('Message from server:', event.data);
+				messages = [...messages, event.data];
+			}
 		};
 		socket.onclose = () => {
 			console.log('Disconnected from server');
