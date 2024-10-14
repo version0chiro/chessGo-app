@@ -15,6 +15,7 @@
 	let newMessage = '';
 	let gameStarted = false;
 	let turn = false;
+	let colour = '';
 
 	let board = [
 		['r', 'n', 'b', 'q', 'k', 'b', 'n', 'r'], // Black back rank
@@ -46,10 +47,16 @@
 				gameStarted = true;
 				console.log('Game started:', message.content);
 				turn = message.turn === playerId;
+				if (message.turn === playerId) {
+					colour = 'white';
+				} else {
+					colour = 'black';
+				}
 			}
 			if (message.type === 'move') {
 				console.log('Move:', message.content);
 				board = message.board;
+				turn = message.turn === playerId;
 			}
 			if (message.type === 'invalidMove') {
 				console.log('Invalid move:', message.content);
@@ -107,6 +114,9 @@
 	let selectedPosition = { row: null, col: null };
 
 	const handleSquareClick = (/** @type {number} */ index) => {
+		if (!turn) {
+			return;
+		}
 		const row = Math.floor(index / cols);
 		const col = index % cols;
 		console.log('Selected square:', row, col);
@@ -121,6 +131,15 @@
 			selectedPiece = null;
 			selectedPosition = { row: null, col: null };
 		} else {
+			if (colour === 'white' && /^[a-z]$/.test(board[row][col])) {
+				console.log('Selected piece:', board[row][col]);
+				console.log('Not your piece');
+				return;
+			} else if (colour === 'black' && /^[A-Z]$/.test(board[row][col])) {
+				console.log('Selected piece:', board[row][col]);
+				console.log('Not your piece');
+				return;
+			}
 			selectedPiece = board[row][col];
 			selectedPosition = { row, col };
 		}
@@ -137,6 +156,8 @@
 
 	<div class="h-screen w-screen flex flex-col gap-4 justify-center items-center">
 		<h1>Game Started</h1>
+		<h1>Colour: {colour}</h1>
+		<h1>Username: {playerId}</h1>
 		<div class="chessboard">
 			{#each board as row, rowIndex}
 				{#each row as piece, colIndex}
